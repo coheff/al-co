@@ -1,2 +1,2 @@
 # al-co
-Alfred workflow Go utilities
+Alfred workflow utilities

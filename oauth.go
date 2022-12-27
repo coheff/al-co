@@ -3,16 +3,42 @@ package alco
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"os/exec"
 
+	"github.com/deanishe/awgo/keychain"
 	"golang.org/x/oauth2"
 )
 
-// NewToken starts the OAuth2 flow in order to get a token.
-func NewToken(config *oauth2.Config) (*oauth2.Token, error) {
+// Token attempts to retrieve a cached OAuth2 token for a given keychain.
+// If none exists the OAuth2 flow is started for a given oauth2.Config.
+// If a token is successfully retrieved it is cached.
+func Token(config *oauth2.Config, kc *keychain.Keychain) *oauth2.Token {
+	tok, err := cachedToken(kc)
+	if err != nil {
+		log.Printf("Error retrieving cached token; it might not exist: %v", err)
+
+		// get new token
+		tok, err = newToken(config)
+		if err != nil {
+			log.Fatalf("Error aquiring token: %v", err)
+		}
+
+		// store token
+		err = cacheToken(kc, tok)
+		if err != nil {
+			log.Fatalf("Error storing token: %v", err)
+		}
+	}
+
+	return tok
+}
+
+// newToken starts the OAuth2 flow in order to get a token.
+func newToken(config *oauth2.Config) (*oauth2.Token, error) {
 	codeCh, err := startWebServer(config.RedirectURL)
 	if err != nil {
 		return nil, err

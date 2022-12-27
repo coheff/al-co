@@ -9,8 +9,8 @@ import (
 
 const key = "token"
 
-// CacheToken adds a token to given Keychain. If a token already exists, it is replaced.
-func CacheToken(kc *keychain.Keychain, tok *oauth2.Token) error {
+// cacheToken adds a token to given Keychain. If a token already exists, it is replaced.
+func cacheToken(kc *keychain.Keychain, tok *oauth2.Token) error {
 	jToken, err := json.Marshal(tok)
 	if err != nil {
 		return err
@@ -23,8 +23,8 @@ func CacheToken(kc *keychain.Keychain, tok *oauth2.Token) error {
 	return nil
 }
 
-// CachedToken retrieves a token from a given Keychain.
-func CachedToken(kc *keychain.Keychain) (*oauth2.Token, error) {
+// cachedToken retrieves a token from a given Keychain.
+func cachedToken(kc *keychain.Keychain) (*oauth2.Token, error) {
 	jToken, err := kc.Get(key)
 	if err != nil {
 		return nil, err

@@ -63,7 +63,7 @@ func startWebServer(redirectUrl string) (chan string, error) {
 	}
 
 	loopback.Scheme = "http"
-	listener, err := net.Listen("tcp", loopback.Host)
+	listener, err := net.Listen("tcp", loopback.String())
 	if err != nil {
 		return nil, err
 	}

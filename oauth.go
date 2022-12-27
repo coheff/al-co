@@ -57,12 +57,12 @@ func newToken(config *oauth2.Config) (*oauth2.Token, error) {
 
 // startWebServer listens for OAuth2 code returned as part of the three-legged auth flow.
 func startWebServer(redirectUrl string) (chan string, error) {
-	_, err := url.ParseRequestURI(redirectUrl)
+	loopback, err := url.ParseRequestURI(redirectUrl)
 	if err != nil {
 		return nil, err
 	}
 
-	listener, err := net.Listen("tcp", redirectUrl)
+	listener, err := net.Listen("tcp", loopback.Host)
 	if err != nil {
 		return nil, err
 	}
